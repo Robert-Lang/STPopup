@@ -734,10 +734,10 @@ static NSMutableSet *_retainedPopupControllers;
     }
     
     CGFloat offsetY = 0;
-    if (self.style == STPopupStyleBottomSheet) {
-        offsetY = keyboardHeight - _safeAreaInsets.bottom;
-    }
-    else {
+//    if (self.style == STPopupStyleBottomSheet) {
+//        offsetY = keyboardHeight - _safeAreaInsets.bottom;
+//    }
+//    else {
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         if (_containerView.bounds.size.height <= _containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) {
             offsetY = _containerView.frame.origin.y - (statusBarHeight + (_containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight - _containerView.bounds.size.height) / 2);
@@ -756,7 +756,7 @@ static NSMutableSet *_retainedPopupControllers;
                 }
             }
         }
-    }
+//    }
     
     NSTimeInterval duration = [_keyboardInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [_keyboardInfo[UIKeyboardAnimationCurveUserInfoKey] intValue];
