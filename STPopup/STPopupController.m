@@ -102,6 +102,8 @@ static NSMutableSet *_retainedPopupControllers;
 
 @interface STPopupController () <UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning, STPopupNavigationTouchEventDelegate>
 
+@property (nonatomic, assign) BOOL LQB_ChangeFrame; // .
+
 @end
 
 @implementation STPopupController
@@ -708,6 +710,10 @@ static NSMutableSet *_retainedPopupControllers;
     _containerView.transform = CGAffineTransformIdentity;
     
     [UIView commitAnimations];
+    
+    if (self.LQB_ChangeFrame) {
+        [self LQB_FRkeyboardWillHide];
+    }
 }
 
 - (void)adjustContainerViewOrigin
@@ -734,10 +740,28 @@ static NSMutableSet *_retainedPopupControllers;
     }
     
     CGFloat offsetY = 0;
-//    if (self.style == STPopupStyleBottomSheet) {
-//        offsetY = keyboardHeight - _safeAreaInsets.bottom;
-//    }
-//    else {
+    if (self.style == STPopupStyleBottomSheet) {
+        offsetY = keyboardHeight - _safeAreaInsets.bottom;
+        
+        // diy修改开始 200
+        CGFloat topHeight = [UIScreen mainScreen].bounds.size.height - self.topViewController.contentSizeInPopup.height;
+        if (topHeight < 350) {
+            // 上边距离不大，需要固定，不移动
+            
+            self.LQB_ChangeFrame = YES;
+            
+            UIViewAnimationOptions animationOptions = 7 << 16;
+            [UIView animateWithDuration:0.25 delay:0 options:animationOptions animations:^{
+                
+                [self LQB_keyboardWillShowOffsetY:offsetY];
+                
+            } completion:nil];
+            
+            return;
+        }
+        // diy修改结束
+    }
+    else {
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         if (_containerView.bounds.size.height <= _containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) {
             offsetY = _containerView.frame.origin.y - (statusBarHeight + (_containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight - _containerView.bounds.size.height) / 2);
@@ -756,7 +780,8 @@ static NSMutableSet *_retainedPopupControllers;
                 }
             }
         }
-//    }
+    }
+    
     
     NSTimeInterval duration = [_keyboardInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [_keyboardInfo[UIKeyboardAnimationCurveUserInfoKey] intValue];
@@ -771,6 +796,42 @@ static NSMutableSet *_retainedPopupControllers;
     _containerView.transform = CGAffineTransformMakeTranslation(0, -offsetY);
     
     [UIView commitAnimations];
+}
+
+// keyboardWillShow
+- (void)LQB_keyboardWillShowOffsetY:(CGFloat)offsetY {
+    CGAffineTransform lastTransform = _containerView.transform;
+    _containerView.transform = CGAffineTransformIdentity;
+    
+    CGFloat height = self.topViewController.contentSizeInPopup.height;
+    
+    CGRect oldContentFrame = _contentView.frame;
+    _contentView.frame = CGRectMake(0, oldContentFrame.origin.y, oldContentFrame.size.width, height - offsetY);
+    
+    UIViewController *topViewController = self.topViewController;
+    topViewController.view.frame = _contentView.bounds;
+            
+    _containerView.transform = lastTransform;
+}
+// keyboardWillHide
+- (void)LQB_FRkeyboardWillHide {
+    
+    self.LQB_ChangeFrame = NO;
+    
+    CGFloat offsetY = 0;
+    
+    CGAffineTransform lastTransform = _containerView.transform;
+    _containerView.transform = CGAffineTransformIdentity;
+    
+    CGFloat height = self.topViewController.contentSizeInPopup.height;
+    
+    CGRect oldContentFrame = _contentView.frame;
+    _contentView.frame = CGRectMake(0, oldContentFrame.origin.y, oldContentFrame.size.width, height - offsetY);
+    
+    UIViewController *topViewController = self.topViewController;
+    topViewController.view.frame = _contentView.bounds;
+            
+    _containerView.transform = lastTransform;
 }
 
 - (UIView<UIKeyInput> *)getCurrentTextInputInView:(UIView *)view
