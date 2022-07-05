@@ -740,48 +740,57 @@ static NSMutableSet *_retainedPopupControllers;
     }
     
     CGFloat offsetY = 0;
-    if (self.style == STPopupStyleBottomSheet) {
-        offsetY = keyboardHeight - _safeAreaInsets.bottom;
-        
-        // diy修改开始 200
-        CGFloat topHeight = [UIScreen mainScreen].bounds.size.height - self.topViewController.contentSizeInPopup.height;
-        if (topHeight < 350) {
-            // 上边距离不大，需要固定，不移动
-            
-            self.LQB_ChangeFrame = YES;
-            
-            UIViewAnimationOptions animationOptions = 7 << 16;
-            [UIView animateWithDuration:0.25 delay:0 options:animationOptions animations:^{
-                
-                [self LQB_keyboardWillShowOffsetY:offsetY];
-                
-            } completion:nil];
-            
-            return;
-        }
-        // diy修改结束
+//    if (self.style == STPopupStyleBottomSheet) {
+////        offsetY = keyboardHeight - _safeAreaInsets.bottom;
+////
+////        // diy修改开始 200
+////        CGFloat topHeight = [UIScreen mainScreen].bounds.size.height - self.topViewController.contentSizeInPopup.height;
+////        if (topHeight < 350) {
+////            // 上边距离不大，需要固定，不移动
+////
+////            self.LQB_ChangeFrame = YES;
+////
+////            UIViewAnimationOptions animationOptions = 7 << 16;
+////            [UIView animateWithDuration:0.25 delay:0 options:animationOptions animations:^{
+////
+////                [self LQB_keyboardWillShowOffsetY:offsetY];
+////
+////            } completion:nil];
+////
+////            return;
+////        }
+//        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+//
+//        if (textFieldBottomY > _containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) {
+//            offsetY = textFieldBottomY - (_containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) ;
+//        }
+//        // diy修改结束
+//    }
+//    else {
+//        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+//        if (_containerView.bounds.size.height <= _containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) {
+//            offsetY = _containerView.frame.origin.y - (statusBarHeight + (_containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight - _containerView.bounds.size.height) / 2);
+//        }
+//        else {
+//            CGFloat spacing = 5;
+//            offsetY = _containerView.frame.origin.y + _containerView.bounds.size.height - (_containerViewController.view.bounds.size.height - keyboardHeight - spacing);
+//            if (offsetY <= 0) { // _containerView can be totally shown, so no need to translate the origin
+//                return;
+//            }
+//            if (_containerView.frame.origin.y - offsetY < statusBarHeight) { // _containerView will be covered by status bar if the origin is translated by "offsetY"
+//                offsetY = _containerView.frame.origin.y - statusBarHeight;
+//                // currentTextField can not be totally shown if _containerView is going to repositioned with "offsetY"
+//                if (textFieldBottomY - offsetY > _containerViewController.view.bounds.size.height - keyboardHeight - spacing) {
+//                    offsetY = textFieldBottomY - (_containerViewController.view.bounds.size.height - keyboardHeight - spacing);
+//                }
+//            }
+//        }
+//    }
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+
+    if (textFieldBottomY > _containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) {
+        offsetY = textFieldBottomY - (_containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) ;
     }
-    else {
-        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-        if (_containerView.bounds.size.height <= _containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight) {
-            offsetY = _containerView.frame.origin.y - (statusBarHeight + (_containerViewController.view.bounds.size.height - keyboardHeight - statusBarHeight - _containerView.bounds.size.height) / 2);
-        }
-        else {
-            CGFloat spacing = 5;
-            offsetY = _containerView.frame.origin.y + _containerView.bounds.size.height - (_containerViewController.view.bounds.size.height - keyboardHeight - spacing);
-            if (offsetY <= 0) { // _containerView can be totally shown, so no need to translate the origin
-                return;
-            }
-            if (_containerView.frame.origin.y - offsetY < statusBarHeight) { // _containerView will be covered by status bar if the origin is translated by "offsetY"
-                offsetY = _containerView.frame.origin.y - statusBarHeight;
-                // currentTextField can not be totally shown if _containerView is going to repositioned with "offsetY"
-                if (textFieldBottomY - offsetY > _containerViewController.view.bounds.size.height - keyboardHeight - spacing) {
-                    offsetY = textFieldBottomY - (_containerViewController.view.bounds.size.height - keyboardHeight - spacing);
-                }
-            }
-        }
-    }
-    
     
     NSTimeInterval duration = [_keyboardInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve curve = [_keyboardInfo[UIKeyboardAnimationCurveUserInfoKey] intValue];

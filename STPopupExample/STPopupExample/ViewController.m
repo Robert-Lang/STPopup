@@ -36,6 +36,8 @@
         case 2: {
             STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:[[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"PopupViewController2"]];
             popupController.containerView.layer.cornerRadius = 4;
+            popupController.style = STPopupStyleBottomSheet;
+
             [popupController presentInViewController:self];
         }
             break;

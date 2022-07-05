@@ -14,6 +14,8 @@
     UILabel *_label;
     UIView *_separatorView;
     UITextField *_textField;
+    UITextField *_textField2;
+    UITextField *_textField3;
 }
 
 - (instancetype)init
@@ -48,15 +50,30 @@
     _textField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 0)];
     _textField.leftViewMode = UITextFieldViewModeAlways;
     [self.view addSubview:_textField];
+    
+    _textField2 = [UITextField new];
+    _textField2.placeholder = @"Tap to input2";
+    _textField2.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 0)];
+    _textField2.leftViewMode = UITextFieldViewModeAlways;
+    [self.view addSubview:_textField2];
+    
+    _textField3 = [UITextField new];
+    _textField3.placeholder = @"Tap to input2";
+    _textField3.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 0)];
+    _textField3.leftViewMode = UITextFieldViewModeAlways;
+    [self.view addSubview:_textField3];
 }
 
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
     
-    _textField.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+    _textField.frame = CGRectMake(0, 44, self.view.frame.size.width, 44);
+    _textField2.frame = CGRectMake(0, 104, self.view.frame.size.width, 44);
     _separatorView.frame = CGRectMake(0, _textField.frame.origin.y - 0.5, self.view.frame.size.width, 0.5);
-    _label.frame = CGRectMake(20, 10, self.view.frame.size.width - 40, self.view.frame.size.height - 20 - _textField.frame.size.height);
+//    _label.frame = CGRectMake(20, 88, self.view.frame.size.width - 40, self.view.frame.size.height - 20 - _textField.frame.size.height);
+    _textField3.frame = CGRectMake(0, self.view.frame.size.width - 4, self.view.frame.size.width, 44);
+
 }
 
 - (void)imageBtnDidTap
